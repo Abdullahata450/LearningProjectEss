@@ -14,7 +14,6 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    // The 'role' field is central to RBAC
     role: {
         type: String,
         enum: ['user', 'admin', 'moderator'], // Define your roles

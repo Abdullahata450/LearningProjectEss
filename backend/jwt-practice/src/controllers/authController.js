@@ -5,7 +5,6 @@ const bcrypt = require('bcryptjs');   // CORRECTED: Use require() for bcryptjs
 // Helper function to generate JWT
 const generateToken = (id, role) => {
     
-    // --- START: ENVIRONMENT VARIABLE CHECK ---
     const secret = process.env.JWT_SECRET;
     
     if (!secret) {
@@ -21,7 +20,6 @@ const generateToken = (id, role) => {
     });
 };
 
-// CORRECTED: Use module.exports or exports.functionName for CommonJS export
 exports.register = async (req, res) => {
     // ... validation ...
     const { username, password } = req.body;
