@@ -1,7 +1,7 @@
 // server.js (or app.js)
 
 require('dotenv').config(); // Load environment variables first
-
+const cors = require('core')
 const express = require('express');
 const connectDB = require('./config/dbConfig'); // Assuming you put DB connection code here
 
@@ -11,7 +11,7 @@ const userRoutes = require('./routes/users'); // EXISTING USER ROUTER
 
 // --- App Setup ---
 const app = express();
-
+app.use(cors());
 // Middleware to parse JSON bodies
 app.use(express.json()); 
 

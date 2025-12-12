@@ -1,37 +1,49 @@
 const jwt = require('jsonwebtoken');
 
 exports.protect = (req, res, next) => {
+    // let token;
+
+    // if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    //     try {
+    //         // Get token from header
+    //         token = req.headers.authorization.split(' ')[1];
+    //         console.log(token)
+    //         // Verify token
+    //         console.log(process.env.JWT_SECRET)
+    //         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    //         // --- ADDED LINE FOR DEBUGGING ---
+    //         console.log("--- JWT VERIFICATION SUCCESS ---");
+    //         console.log("Decoded Token Data (User Payload):", decoded); 
+    //         console.log(`User ID: ${decoded.id} | Role: ${decoded.role}`);
+    //         console.log("----------------------------------");
+    //         // ----------------------------------
+
+    //         // Attach decoded user (ID and ROLE) to the request
+    //         // We don't fetch the user from DB to keep it fast
+    //         req.user = decoded; 
+
+    //         next();
+    //     } catch (error) {
+    //         console.error(error);
+    //         res.status(401).json({ message: 'Not authorized, token failed' });
+    //     }
+    // }
+
+    // if (!token) {
+    //     res.status(401).json({ message: 'Not authorized, no token' });
+    // }
     let token;
+    if (req.headers.authorization && req.headers.authorization.startswith("Bearer")) {
+        // extract token from 
+        token = req.headers.authorization.split(1)[' '];
 
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        try {
-            // Get token from header
-            token = req.headers.authorization.split(' ')[1];
-            console.log(token)
-            // Verify token
-            console.log(process.env.JWT_SECRET)
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        // decode the token
+        decoded_token = jwt.verify(token,process.env.JWT_SECRET);
 
-            // --- ADDED LINE FOR DEBUGGING ---
-            console.log("--- JWT VERIFICATION SUCCESS ---");
-            console.log("Decoded Token Data (User Payload):", decoded); 
-            console.log(`User ID: ${decoded.id} | Role: ${decoded.role}`);
-            console.log("----------------------------------");
-            // ----------------------------------
 
-            // Attach decoded user (ID and ROLE) to the request
-            // We don't fetch the user from DB to keep it fast
-            req.user = decoded; 
-
-            next();
-        } catch (error) {
-            console.error(error);
-            res.status(401).json({ message: 'Not authorized, token failed' });
-        }
-    }
-
-    if (!token) {
-        res.status(401).json({ message: 'Not authorized, no token' });
+        req.user = decoded;
+        next();
     }
 };
 
