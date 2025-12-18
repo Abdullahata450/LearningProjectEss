@@ -1,12 +1,46 @@
 import express from 'express';
-import mongoose,{connectDB} from "./config/db.js";
-import loginRouter from './router/authRoute.js'
-import userRouter from './router/userRoute.js'
+import {connectDB} from './config/db.js';
+import loginRouter from './router/authRoute.js';
+import userRouter from './router/userRoute.js';
 import cors from 'cors';
+import morgan from 'morgan';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import swaggerUi from 'swagger-ui-express';
 
-const app = express()   // create express object
+
+
+const app = express();   // create express object
 export default app;
-const port = 5000
+const port = 5000;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+// console.log(__filename,'\n\n',__dirname);
+const accessLogStream = fs.createWriteStream(
+    path.join(__dirname, 'access.log'),
+    { flags: 'a' }
+);
+// Path to the generated file
+const swaggerPath = path.join(__dirname, '../swagger-output.json');
+
+if (fs.existsSync(swaggerPath)) {
+    const swaggerDocument = JSON.parse(fs.readFileSync(swaggerPath, 'utf8'));
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+}
+
+
+// 1. TERMINAL LOGGING (Errors Only)
+app.use(morgan('dev', {
+    // skip will return TRUE (meaning DON'T log) if status is less than 400
+    skip: (req, res) => res.statusCode < 400
+}));
+
+// 2. FILE LOGGING (Everything)
+app.use(morgan('combined', {
+    stream: accessLogStream
+}));
 
 // implementing cors options
 const allowedOrigins = [
@@ -26,15 +60,30 @@ const corsOptions: cors.CorsOptions = {
     allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
     credentials: true, // Allow cookies/authorization headers to be sent
 };
+// implementing swaggerStuff
+// const swaggerOptions = {
+//     definition: {
+//         openapi: '3.0.0',
+//         info: {
+//             title: 'My Learning API',
+//             version: '1.0.0',
+//             description: 'Documentation for my Express/TS backend',
+//         },
+//     },
+//     // This tells the tool where to find the documentation comments
+//     apis: ['./src/router/*.ts'],
+// };
+// const specs = swaggerJsDoc(swaggerOptions);
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
-
+// app.use(morgan('dev'))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors(corsOptions)); // Apply CORS middleware with options
 
 
-
-app.use('/api/auth',loginRouter)     // use routes for mainly Login
-app.use('/api/auth',userRouter)
+app.use('/api/auth',loginRouter);     // use routes for mainly Login
+app.use('/api/auth',userRouter);
 
 const startServer = async () => {
     try {
@@ -42,7 +91,7 @@ const startServer = async () => {
         await connectDB();
 
         // Then start server
-        const server = app.listen(port, () => {
+        app.listen(port, () => {
             console.log(` Server started on port ${port}`);
         });
 
@@ -53,4 +102,4 @@ const startServer = async () => {
 };
 
 
-startServer();
+await startServer();
