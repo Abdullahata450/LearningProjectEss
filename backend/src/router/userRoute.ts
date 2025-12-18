@@ -1,15 +1,7 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import { protect, authorize } from '../middleware/authMiddleware.js';
-import User from '../model/user.js'; // Assuming your Mongoose Model is here
-import {getUserData,getAllUsers,deleteUser} from '../controller/userController.js'
+import {getUserData,getAllUsers,deleteUser} from '../controller/userController.js';
 
-interface UserPayload {
-    id: string; 
-    role: string; 
-}
-interface AuthRequest extends Request {
-    user?: UserPayload; 
-}
 
 const router = express.Router();
 

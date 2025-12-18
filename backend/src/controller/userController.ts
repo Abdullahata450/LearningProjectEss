@@ -14,7 +14,7 @@ export const getUserData = async (req:Request,res:Response) => {
     try {
         const username:string = req.params.username;
 
-        const userData = await User.findOne({username:username})
+        const userData = await User.findOne({username:username});
         // I mean it should exist becuz user has logged in to get here
         if (userData){
             res.status(200).json(userData);
@@ -23,7 +23,7 @@ export const getUserData = async (req:Request,res:Response) => {
     catch (e) {
         return res.status(400).json(e);
     }
-}
+};
 
 export const getAllUsers = async (req:Request,res:Response) => {
     try {
@@ -34,7 +34,7 @@ export const getAllUsers = async (req:Request,res:Response) => {
         console.error('Error fetching users:', error);
         res.status(500).json({ message: 'Server error fetching user list.' });
     }
-}
+};
 
 export const deleteUser = async (req: AuthRequest, res: Response) => {
     try {
