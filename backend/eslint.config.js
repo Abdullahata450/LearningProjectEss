@@ -34,6 +34,24 @@ export default tseslint.config(
 
             // Example: allow console.log in development, but warn
             'no-console': 'off',
+            '@typescript-eslint/no-floating-promises': 'error',
+
+            // Disallows the 'any' type (makes your TS actually useful)
+            '@typescript-eslint/no-explicit-any': 'warn',
+
+            // Ensures you don't forget 'await' in async functions
+            '@typescript-eslint/await-thenable': 'error',
+            'semi': ['error', 'always'],
+
+            // Enforces single quotes (standard in JS/TS)
+            'quotes': ['error', 'single', { 'avoidEscape': true }],
+
+            // Requires a specific naming convention for Classes/Interfaces
+            '@typescript-eslint/naming-convention': [
+                'error',
+                { 'selector': 'interface', 'format': ['PascalCase'] },
+                { 'selector': 'class', 'format': ['PascalCase'] }
+            ],
         }
     }
 );

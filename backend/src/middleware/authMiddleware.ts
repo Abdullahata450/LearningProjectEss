@@ -29,22 +29,22 @@ export const protect = (req: AuthRequest, res: Response, next: NextFunction): vo
             
             const secret = process.env.JWT_SECRET;
             if (!secret) {
-                throw new Error("JWT_SECRET not configured.");
+                throw new Error('JWT_SECRET not configured.');
             }
 
             // 2. Verify token
             const decoded = jwt.verify(token, secret) as UserPayload;
 
             // --- DEBUGGING LOGS ---
-            console.log("--- JWT VERIFICATION SUCCESS ---");
-            console.log("Decoded Token Data (User Payload):", decoded); 
+            console.log('--- JWT VERIFICATION SUCCESS ---');
+            console.log('Decoded Token Data (User Payload):', decoded); 
 
             // 3. Attach decoded user payload to the request for subsequent middleware/controllers
             req.user = decoded;
 
             next();
         } catch (error) {
-            console.error("Token verification failed:", error);
+            console.error('Token verification failed:', error);
             unauthorizedResponse(res, 'Not authorized, token failed');
         }
     } else {

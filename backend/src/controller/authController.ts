@@ -1,8 +1,8 @@
-import {Request,Response} from "express";
-import User from "../model/user.js"
-import jwt from "jsonwebtoken"
+import {Request,Response} from 'express';
+import User from '../model/user.js';
+import jwt from 'jsonwebtoken';
 import 'dotenv/config';
-import bcrypt from "bcryptjs";
+import bcrypt from 'bcryptjs';
 
 // interface to enforce structure of request body
 
@@ -17,11 +17,11 @@ const generateJWT = (id:string,role:string) => {
     try {
         // validate arguments
         if(!id || !role) {
-            throw new Error("Role or ID not given")
+            throw new Error('Role or ID not given');
         }
         const secret:string = process.env.JWT_SECRET as string;
         if(!secret) {
-            throw new Error("Secret not found")
+            throw new Error('Secret not found');
         }
 
         // call the function to generate token
@@ -32,9 +32,9 @@ const generateJWT = (id:string,role:string) => {
 
     }
     catch (e) {
-        console.error("Error occurred:",e)
+        console.error('Error occurred:',e);
     }
-}
+};
 
 
 /* function takes credentials, finds if user exists
@@ -43,7 +43,7 @@ returns data with jwt token if found else Null
  */
 export const login = async (req:Request,res:Response) => {
     const {username,password}= req.body;
-    const found_user = await User.findOne({username:username})
+    const found_user = await User.findOne({username:username});
     // console.log(req)
     // console.log("User found:",found_user)
 
@@ -62,12 +62,12 @@ export const login = async (req:Request,res:Response) => {
     else {
         res.status(401).json({ message: 'Invalid credentials' });
     }
-}
+};
 
 export const register = async (req:Request<Record<string, never>,Record<string, never>,RegisterFormat>,res:Response) => {
     // compile time checking
     const {username,password} = req.body;
-    const role:string = "user";
+    const role:string = 'user';
     // run time checks
     // 1. Define fields to check
     const requiredFields = { username, password, role };
@@ -86,9 +86,9 @@ export const register = async (req:Request<Record<string, never>,Record<string, 
     try {
 
         // check if user already exists
-        const user = await User.findOne({username:username})
+        const user = await User.findOne({username:username});
         if (user) {
-            return res.status(401).json("Username already taken")
+            return res.status(401).json('Username already taken');
         }
 
         await User.create({
@@ -96,10 +96,10 @@ export const register = async (req:Request<Record<string, never>,Record<string, 
             password: password.trim(),
             role: 'user',
         });
-        return res.status(200).json({message:"User successfully created"})
+        return res.status(200).json({message:'User successfully created'});
     }
     catch (e) {
-        return res.status(500).json(e)
+        return res.status(500).json(e);
     }
 
-}
+};
