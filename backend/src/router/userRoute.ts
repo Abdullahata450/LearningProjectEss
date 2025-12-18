@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response } from 'express';
 // Note: Use the .js extension for imports when using ES Modules/ts-node
 import { protect, authorize } from '../middleware/authMiddleware.js'; 
 import User from '../model/user.js'; // Assuming your Mongoose Model is here

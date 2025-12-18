@@ -33,7 +33,7 @@ export default tseslint.config(
             // '@typescript-eslint/no-explicit-any': 'error',
 
             // Example: allow console.log in development, but warn
-            'no-console': 'warn',
+            'no-console': 'off',
         }
     }
 );

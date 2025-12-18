@@ -1,12 +1,5 @@
 import mongoose from "../config/db.js"
 import bcrypt from 'bcryptjs'
-// Create interface to enforce structure of user schema
-
-interface IUser extends mongoose.Document{
-    username:string,
-    password:string,
-    role: "user" | "admin" | "moderator"
-}
 
 const UserSchema = new mongoose.Schema({
     username: {
@@ -25,7 +18,7 @@ const UserSchema = new mongoose.Schema({
     }
 });
 
-UserSchema.pre('save', async function(next) {
+UserSchema.pre('save', async function() {
     if (this.isModified('password')) {
         const salt = await bcrypt.genSalt(10);
         this.password = await bcrypt.hash(this.password, salt);

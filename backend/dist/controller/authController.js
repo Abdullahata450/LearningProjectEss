@@ -29,8 +29,8 @@ returns data with jwt token if found else Null
 export const login = async (req, res) => {
     const { username, password } = req.body;
     const found_user = await User.findOne({ username: username });
-    console.log(req.body);
-    console.log("User found:", found_user);
+    // console.log(req)
+    // console.log("User found:",found_user)
     // console.log(await bcrypt.hash(password,10))
     if (found_user && (await bcrypt.compare(password, found_user.password))) {
         const token = generateJWT(found_user._id.toString(), found_user.role);
@@ -67,7 +67,7 @@ export const register = async (req, res) => {
         if (user) {
             return res.status(401).json("Username already taken");
         }
-        const newUser = await User.create({
+        await User.create({
             username: username.trim(),
             password: password.trim(),
             role: 'user',

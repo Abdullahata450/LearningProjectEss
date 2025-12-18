@@ -1,4 +1,4 @@
-import {Request,Response,NextFunction} from "express";
+import {Request,Response} from "express";
 import User from "../model/user.js"
 import jwt from "jsonwebtoken"
 import 'dotenv/config';
@@ -44,8 +44,8 @@ returns data with jwt token if found else Null
 export const login = async (req:Request,res:Response) => {
     const {username,password}= req.body;
     const found_user = await User.findOne({username:username})
-    console.log(req.body)
-    console.log("User found:",found_user)
+    // console.log(req)
+    // console.log("User found:",found_user)
 
     
 
@@ -64,7 +64,7 @@ export const login = async (req:Request,res:Response) => {
     }
 }
 
-export const register = async (req:Request<{},{},RegisterFormat>,res:Response) => {
+export const register = async (req:Request<Record<string, never>,Record<string, never>,RegisterFormat>,res:Response) => {
     // compile time checking
     const {username,password} = req.body;
     const role:string = "user";
@@ -91,7 +91,7 @@ export const register = async (req:Request<{},{},RegisterFormat>,res:Response) =
             return res.status(401).json("Username already taken")
         }
 
-        const newUser = await User.create({
+        await User.create({
             username: username.trim(),
             password: password.trim(),
             role: 'user',
@@ -99,7 +99,7 @@ export const register = async (req:Request<{},{},RegisterFormat>,res:Response) =
         return res.status(200).json({message:"User successfully created"})
     }
     catch (e) {
-        return res.status(500).json("Registration failed")
+        return res.status(500).json(e)
     }
 
 }

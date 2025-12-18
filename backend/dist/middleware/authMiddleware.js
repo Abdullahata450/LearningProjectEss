@@ -1,12 +1,9 @@
 import jwt from 'jsonwebtoken';
-import 'dotenv/config'; // Make sure this is imported to load environment variables
+import 'dotenv/config';
 // Helper function to handle the 401 response
 const unauthorizedResponse = (res, message) => {
     res.status(401).json({ message });
 };
-// ====================================================================
-// 1. JWT Protection Middleware
-// ====================================================================
 export const protect = (req, res, next) => {
     let token;
     // 1. Check if token exists in the Authorization header and starts with 'Bearer'
@@ -16,7 +13,6 @@ export const protect = (req, res, next) => {
             token = req.headers.authorization.split(' ')[1];
             const secret = process.env.JWT_SECRET;
             if (!secret) {
-                // Fail fast if the secret is not defined
                 throw new Error("JWT_SECRET not configured.");
             }
             // 2. Verify token
@@ -24,10 +20,8 @@ export const protect = (req, res, next) => {
             // --- DEBUGGING LOGS ---
             console.log("--- JWT VERIFICATION SUCCESS ---");
             console.log("Decoded Token Data (User Payload):", decoded);
-            // ----------------------
             // 3. Attach decoded user payload to the request for subsequent middleware/controllers
             req.user = decoded;
-            // 4. Proceed to the next middleware/controller
             next();
         }
         catch (error) {
@@ -40,13 +34,6 @@ export const protect = (req, res, next) => {
         unauthorizedResponse(res, 'Not authorized, no token');
     }
 };
-// ====================================================================
-// 2. Role-Based Authorization Middleware
-// ====================================================================
-/**
- * Middleware to check user role against an array of allowed roles.
- * @param roles Array of allowed role strings (e.g., ['admin', 'manager'])
- */
 export const authorize = (roles = []) => {
     // Ensure roles is always an array for simpler logic below
     if (typeof roles === 'string') {
@@ -60,7 +47,6 @@ export const authorize = (roles = []) => {
             return unauthorizedResponse(res, 'Authorization failed: User payload missing.');
         }
         // 2. Check if the route requires authorization (if roles array is empty, skip check)
-        // If the roles array is empty, anyone who passed 'protect' is allowed.
         if (roles.length === 0) {
             return next();
         }
@@ -70,7 +56,6 @@ export const authorize = (roles = []) => {
                 message: `Forbidden. Role '${req.user.role}' is not authorized to access this route.`
             });
         }
-        // 4. Role is authorized
         next();
     };
 };
